@@ -10,3 +10,14 @@ right = 15
 
 start = 9
 select = 8
+
+L1 = 4
+L2 = 6
+L3 = 10
+
+R1 = 5
+R2 = 7
+R3 = 11
+
+PS = 16
+Touch = 17

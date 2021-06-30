@@ -17,6 +17,8 @@ module.exports = {
     'no-underscore-dangle': ['error', { allowAfterThis: true }],
     'no-plusplus': ['error', { allowForLoopAfterthoughts: true }],
     'import/prefer-default-export': 0,
+    'max-len': ['warn', { 'code': 150 }],
+    'no-plusplus': ['error', { 'allowForLoopAfterthoughts': true }],
     'radix': ['error', 'as-needed']
   },
 };
