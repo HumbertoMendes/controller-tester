@@ -1,6 +1,8 @@
 <template>
   <div>
+    <h1>{{ title }}</h1>
     <game-controller
+      class="game-controller__container"
       :active-buttons="activeButtons"
     />
     <div
@@ -25,7 +27,13 @@ export default {
       intervalId: null,
       axes: [],
       activeButtons: [],
+      connected: false,
     };
+  },
+  computed: {
+    title() {
+      return this.connected ? 'Controller is connected' : 'Controller is not connected';
+    },
   },
   created() {
     window.addEventListener('gamepadconnected', this.onGamePadConnected);
@@ -37,6 +45,8 @@ export default {
   },
   methods: {
     onGamePadConnected(event) {
+      this.connected = true;
+
       const { index } = event.gamepad;
       // All buttons and axes values can be accessed through
       this.intervalId = setInterval(() => {
@@ -59,6 +69,7 @@ export default {
       }, 100);
     },
     onGamePadDisconnected() {
+      this.connected = false;
       console.log('disconnected');
     },
     cancelPolling() {
@@ -71,6 +82,8 @@ export default {
 };
 </script>
 
-<style>
-
+<style lang="scss" scoped>
+.game-controller__container {
+  width: 500px;
+}
 </style>
