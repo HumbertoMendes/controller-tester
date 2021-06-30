@@ -1,0 +1,12 @@
+x = 0
+cir = 1
+sqr = 2
+tri = 3
+
+up = 12
+down = 13
+left = 14
+right = 15
+
+start = 9
+select = 8
