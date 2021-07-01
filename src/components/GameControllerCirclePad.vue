@@ -1,6 +1,7 @@
 <template>
   <div
     class="game-controller__circle-pad"
+    :style="`background-color: ${fill};`"
   >
     <div
       class="game-controller__circle-pad__deadzone"
@@ -21,6 +22,10 @@ export default {
       type: Number,
       default: 0,
     },
+    active: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     xPosition() {
@@ -28,6 +33,9 @@ export default {
     },
     yPosition() {
       return 50 + (50 * this.yAxis);
+    },
+    fill() {
+      return this.active ? 'red' : 'transparent';
     },
   },
 };

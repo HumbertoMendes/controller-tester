@@ -13,6 +13,9 @@
       <game-controller
         class="game-controller"
         :active-buttons="activeButtons"
+      />
+      <game-controller-circle-pad-group
+        :active-buttons="activeButtons"
         :axes="axes"
       />
     </div>
@@ -21,12 +24,14 @@
 
 <script>
 import GameController from '../components/GameController.vue';
+import GameControllerCirclePadGroup from '../components/GameControllerCirclePadGroup.vue';
 
 export default {
+  name: 'index-view',
   components: {
     GameController,
+    GameControllerCirclePadGroup,
   },
-  name: 'index-view',
   data() {
     return {
       axes: [],
@@ -74,7 +79,11 @@ export default {
           if (gamepad.buttons[id].pressed || gamepad.buttons[id].touched) activeButtons.push(id);
         }
 
-        if (this.activeButtons.toString() !== activeButtons.toString()) this.activeButtons = activeButtons;
+        // console.log(this.activeButtons.toString(), activeButtons.toString(), this.activeButtons.toString() !== activeButtons.toString());
+        if (this.activeButtons.length !== activeButtons.length || this.activeButtons.toString() !== activeButtons.toString()) {
+          this.activeButtons = activeButtons;
+        }
+        // console.log(activeButtons);
 
         this.axes = gamepad.axes;
         nextTimestamp = currentTimestamp;
