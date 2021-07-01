@@ -12,10 +12,6 @@
             :style="`background-color: ${getFill(key.L1)}`"
           />
         </div>
-        <div
-          class="game-controller__track game-controller__button"
-          :style="`background-color: ${getFill(key.TRACK)}`"
-        />
         <div>
           <div
             class="game-controller__trigger game-controller__button"
@@ -31,6 +27,10 @@
     <div
       class="game-controller"
     >
+      <div
+        class="game-controller__track game-controller__button"
+        :style="`background-color: ${getFill(key.TRACK)}`"
+      />
       <svg
         xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -263,9 +263,14 @@ export default {
   }
 
   &__track {
-    flex-grow: 1;
-    height: 80px;
+    position: absolute;
+    // flex-grow: 1;
+    width: 172px;
+    height: 55px;
     margin: 0 10px;
+    top: 10px;
+    left: calc(50% - 12px);
+    transform: translateX(-50%);
   }
 }
 </style>
