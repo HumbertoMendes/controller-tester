@@ -1,15 +1,20 @@
 <template>
   <div>
     <h1>{{ title }}</h1>
-    <game-controller
-      class="game-controller__container"
-      :active-buttons="activeButtons"
-    />
     <div
-      v-for="(item, index) in axes"
-      :key="index"
+      class="game-controller__container"
     >
-      {{ axes[index] }}
+      <!-- <div
+        v-for="(item, index) in axes"
+        :key="index"
+      >
+        {{ index }}: {{ axes[index] }}
+      </div> -->
+      <game-controller
+        class="game-controller"
+        :active-buttons="activeButtons"
+        :axes="axes"
+      />
     </div>
   </div>
 </template>
@@ -24,7 +29,6 @@ export default {
   name: 'index-view',
   data() {
     return {
-      intervalId: null,
       axes: [],
       activeButtons: [],
       connected: false,
@@ -36,54 +40,60 @@ export default {
     },
   },
   created() {
-    window.addEventListener('gamepadconnected', this.onGamePadConnected);
-    window.addEventListener('gamepaddisconnected', this.onGamePadDisconnected);
+    this.connect();
   },
   beforeDestroy() {
-    window.removeEventListener('gamepadconnected', this.onGamePadConnected);
-    window.removeEventListener('gamepaddisconnected', this.onGamePadDisconnected);
+    this.disconnect();
   },
   methods: {
+    connect() {
+      window.addEventListener('gamepadconnected', this.onGamePadConnected);
+      window.addEventListener('gamepaddisconnected', this.onGamePadDisconnected);
+    },
+    disconnect() {
+      window.removeEventListener('gamepadconnected', this.onGamePadConnected);
+      window.removeEventListener('gamepaddisconnected', this.onGamePadDisconnected);
+    },
     onGamePadConnected(event) {
       this.connected = true;
-
-      const { index } = event.gamepad;
-      // All buttons and axes values can be accessed through
-      this.intervalId = setInterval(() => {
-        const gamepad = navigator.getGamepads()[index];
-
-        // this.activeButtons = gamepad.buttons.findIndex((button) => button.pressed || button.touched);
-        // console.log(this.activeButtons);
-        // gamepad.buttons.forEach((button, id) => {
-        //   if (button.pressed || button.touched) console.log(id, button);
-        // });
-        const activeButtons = [];
-        for (let id = gamepad.buttons.length; id--;) {
-          if (gamepad.buttons[id].pressed || gamepad.buttons[id].touched) activeButtons.push(id);
-        }
-        if (this.activeButtons.length !== activeButtons.length && this.activeButtons.toString() !== activeButtons.toString()) {
-          this.activeButtons = activeButtons;
-        }
-
-        this.axes = gamepad.axes;
-      }, 100);
+      window.requestAnimationFrame((timestamp) => this.doPooling(event.gamepad.index, 0, timestamp));
     },
     onGamePadDisconnected() {
       this.connected = false;
       console.log('disconnected');
     },
-    cancelPolling() {
-      if (this.intervalId !== null) {
-        clearInterval(this.intervalId);
-        this.intervalId = null;
+    doPooling(index, previousTimestamp, currentTimestamp) {
+      const elapsed = currentTimestamp - previousTimestamp;
+      let nextTimestamp = previousTimestamp;
+
+      if (this.connected && elapsed > 10) {
+        const gamepad = navigator.getGamepads()[index];
+        const activeButtons = [];
+
+        for (let id = gamepad.buttons.length; id--;) {
+          if (gamepad.buttons[id].pressed || gamepad.buttons[id].touched) activeButtons.push(id);
+        }
+
+        if (this.activeButtons.toString() !== activeButtons.toString()) this.activeButtons = activeButtons;
+
+        this.axes = gamepad.axes;
+        nextTimestamp = currentTimestamp;
       }
+
+      window.requestAnimationFrame((timestamp) => this.doPooling(index, nextTimestamp, timestamp));
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.game-controller__container {
+.game-controller {
   width: 500px;
+
+  &__container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
 }
 </style>
